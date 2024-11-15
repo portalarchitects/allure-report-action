@@ -67,7 +67,11 @@ try {
 	// process allure report
 	if (prevReportGenerationId) {
 		const prevHistoryDir = path.join(reportTypeDir, prevReportGenerationId, 'history')
-		await io.cp(prevHistoryDir, testResultsDir, { recursive: true })
+		if (await isExists(prevHistoryDir)) {
+			await io.cp(prevHistoryDir, testResultsDir, { recursive: true })
+		} else {
+			console.log("Could not find previous history directory: " + prevHistoryDir)
+		}
 	}
 	await writeExecutorJson(testResultsDir, {
 		reportName: reportType,
