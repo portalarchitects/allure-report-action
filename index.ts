@@ -37,6 +37,8 @@ try {
 	const ghPagesReportUrl = `${ghPagesBaseUrl}/${reportGenerationId}`.replaceAll(' ', '%20')
 	const prevReportGenerationId = await getPrevReportGenerationId(reportTypeDir, prevGitHash)
 
+	console.log("DEBUG: sanity check 1")
+
 	// log
 	console.log({
 		prevGitHash,
@@ -62,13 +64,18 @@ try {
 		throw new Error('There were issues with the allure-results, see error above.')
 	}
 
+	console.log("DEBUG: sanity check 2")
 	await io.mkdirP(reportTypeDir)
 
 	// process allure report
+	console.log("DEBUG: sanity check 3")
 	if (prevReportGenerationId) {
 		const prevHistoryDir = path.join(reportTypeDir, prevReportGenerationId, 'history')
+		console.log("DEBUG: about to check is prevHistoryDir exists")
 		if (await isExists(prevHistoryDir)) {
+			console.log("DEBUG: prevHistoryDir exists, before copy")
 			await io.cp(prevHistoryDir, testResultsDir, { recursive: true })
+			console.log("DEBUG: prevHistoryDir exists, after copy")
 		} else {
 			console.log("Could not find previous history directory: " + prevHistoryDir)
 		}
