@@ -108,5 +108,6 @@ try {
 	core.setOutput('report_generation_id', reportGenerationId)
 	core.setOutput('report_path', reportOutputDir)
 } catch (error) {
+	console.log(error)
 	core.setFailed(error.message)
 }
