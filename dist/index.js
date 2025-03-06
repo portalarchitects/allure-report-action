@@ -29637,8 +29637,19 @@ try {
     await _actions_io__WEBPACK_IMPORTED_MODULE_2__.mkdirP(reportTypeDir);
     // process allure report
     if (prevReportGenerationId) {
-        const prevHistoryDir = path__WEBPACK_IMPORTED_MODULE_3__.join(reportTypeDir, prevReportGenerationId, 'history');
-        await _actions_io__WEBPACK_IMPORTED_MODULE_2__.cp(prevHistoryDir, testResultsDir, { recursive: true });
+        try {
+            const prevHistoryDir = path__WEBPACK_IMPORTED_MODULE_3__.join(reportTypeDir, prevReportGenerationId, 'history');
+            if (await (0,_src_helpers_js__WEBPACK_IMPORTED_MODULE_6__/* .isExists */ .hV)(prevHistoryDir)) {
+                await _actions_io__WEBPACK_IMPORTED_MODULE_2__.cp(prevHistoryDir, testResultsDir, { recursive: true });
+            }
+            else {
+                console.log('Could not find previous history directory: ' + prevHistoryDir);
+            }
+        }
+        catch (error) {
+            console.log('An error occurred while copying the previous history directory:');
+            console.log(error);
+        }
     }
     await (0,_src_allure_js__WEBPACK_IMPORTED_MODULE_4__/* .writeExecutorJson */ .sp)(testResultsDir, {
         reportName: reportType,
@@ -29675,6 +29686,8 @@ try {
     _actions_core__WEBPACK_IMPORTED_MODULE_0__.setOutput('report_path', reportOutputDir);
 }
 catch (error) {
+    console.log('An unrecoverable error occurred:');
+    console.log(error);
     _actions_core__WEBPACK_IMPORTED_MODULE_0__.setFailed(error.message);
 }
 
