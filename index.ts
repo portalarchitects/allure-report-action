@@ -66,11 +66,16 @@ try {
 
 	// process allure report
 	if (prevReportGenerationId) {
-		const prevHistoryDir = path.join(reportTypeDir, prevReportGenerationId, 'history')
-		if (await isExists(prevHistoryDir)) {
-			await io.cp(prevHistoryDir, testResultsDir, { recursive: true })
-		} else {
-			console.log("Could not find previous history directory: " + prevHistoryDir)
+		try {
+			const prevHistoryDir = path.join(reportTypeDir, prevReportGenerationId, 'history')
+			if (await isExists(prevHistoryDir)) {
+				await io.cp(prevHistoryDir, testResultsDir, { recursive: true })
+			} else {
+				console.log('Could not find previous history directory: ' + prevHistoryDir)
+			}
+		} catch (error) {
+			console.log('An error occurred while copying the previous history directory:')
+			console.log(error)
 		}
 	}
 	await writeExecutorJson(testResultsDir, {
@@ -108,6 +113,7 @@ try {
 	core.setOutput('report_generation_id', reportGenerationId)
 	core.setOutput('report_path', reportOutputDir)
 } catch (error) {
+	console.log('An unrecoverable error occurred:')
 	console.log(error)
 	core.setFailed(error.message)
 }
